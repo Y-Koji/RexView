@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 
@@ -50,6 +51,7 @@ namespace RexView.Model
         }
 
         public ICommand InitializeCommand { get => GetValue<ICommand>(new ActionCommand(Initialize)); set => SetValue(value); }
+        public ICommand FileDropCommand { get => GetValue<ICommand>(new ActionCommand(FileDrop)); set => SetValue(value); }
         public ICommand ErrorCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         public ICommand MatchCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         
@@ -83,6 +85,23 @@ namespace RexView.Model
 
                     MatchOptions.Add(regexOption);
                 }
+            }
+        }
+
+        private void FileDrop(object obj)
+        {
+            if (obj is FileInfo[] files)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var file in files)
+                {
+                    using (StreamReader sr = file.OpenText())
+                    {
+                        sb.Append(sr.ReadToEnd());
+                    }
+                }
+
+                Text = sb.ToString();
             }
         }
 

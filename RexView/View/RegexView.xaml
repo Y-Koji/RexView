@@ -3,14 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:RexView.View"
+             xmlns:m="clr-namespace:RexView.Model"
              xmlns:vm="clr-namespace:RexView.ViewModel"
              xmlns:control="clr-namespace:RexView.Model.Control"
              xmlns:reg="clr-namespace:System.Text.RegularExpressions;assembly=System"
+             xmlns:behavior="clr-namespace:RexView.Model.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450"
              d:DesignWidth="800"
-             d:DataContext="{x:Type vm:MainViewModel}">
+             d:DataContext="{x:Type m:RegexModel}">
     
     <Grid Background="White">
         <Grid.RowDefinitions>
@@ -37,7 +40,11 @@
                     Text="{Binding Text, Mode=TwoWay}" 
                     FontSize="12"
                     Block.LineHeight="1"
-                    VerticalScrollBarVisibility="Auto" />
+                    VerticalScrollBarVisibility="Auto">
+                    <i:Interaction.Behaviors>
+                        <behavior:FileDragDropBehavior Command="{Binding FileDropCommand}" />
+                    </i:Interaction.Behaviors>
+                </control:TextBox>
             </Grid>
         </Grid>
         <Grid Grid.Row="1">

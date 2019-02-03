@@ -62,6 +62,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model\ActionCommand.cs" />
+    <Compile Include="Model\Behaviors\FileDragDropBehavior.cs" />
     <Compile Include="Model\Control\RegexTextBox.cs" />
     <Compile Include="Model\Control\TemplateSelector.cs" />
     <Compile Include="Model\NullCommand.cs" />
