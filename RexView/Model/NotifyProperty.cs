@@ -2,35 +2,31 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace RexView.Model
 {
+    [DataContract]
     public class NotifyProperty : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private IDictionary<string, object> ValuePool { get; } = new Dictionary<string, object>();
+        private IDictionary<string, object> ValuePool { get; set; } = null;
 
-        protected T GetValue<T>([CallerMemberName] string propName = "")
+        protected T GetValue<T>(T initialValue = default(T), [CallerMemberName] string propName = "")
         {
+            if (null == ValuePool)
+            {
+                ValuePool = new Dictionary<string, object>();
+            }
+
             if (ValuePool.ContainsKey(propName))
             {
                 return (T)ValuePool[propName];
             }
             else
             {
-                if (typeof(T) == typeof(string))
-                {
-                    ValuePool[propName] = string.Empty;
-                }
-                else if (typeof(T) == typeof(int))
-                {
-                    ValuePool[propName] = 0;
-                }
-                else
-                {
-                    ValuePool[propName] = default(T);
-                }
+                ValuePool[propName] = initialValue;
 
                 return (T)ValuePool[propName];
             }
@@ -38,6 +34,11 @@ namespace RexView.Model
 
         protected void SetValue<T>(T value, Action foward = null, [CallerMemberName] string  propName = "")
         {
+            if (null == ValuePool)
+            {
+                ValuePool = new Dictionary<string, object>();
+            }
+
             ValuePool[propName] = value;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));

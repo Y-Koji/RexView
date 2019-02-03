@@ -20,20 +20,20 @@ namespace RexView.ViewModel
             InitializeCommand = new ActionCommand(Initialize);
             DisposeCommand = new ActionCommand(Dispose);
             ReferenceCommand = new ActionCommand(Reference);
-            Regex = new RegexModel();
+            Regex = RegexModel.Load();
 
             Title = "RexView";
         }
 
         private void Initialize()
         {
-
+            Regex.InitializeCommand.Execute(new object());
         }
 
         public void Reference()
         {
-            Regex.Text = "hao123_hello345";
-            Regex.RegexText = @"hao(?<num1>\d+)_hello(?<num2>\d+)";
+            string txt = Regex.RegexText;
+            Regex.RegexText = txt;
         }
 
         public void Dispose()

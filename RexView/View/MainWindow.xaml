@@ -73,7 +73,10 @@
                     AcceptsReturn="False" FontFamily="Consolas"/>
             </Grid>
             <Grid Grid.Column="2">
-                <Button Content="参照" Command="{Binding ReferenceCommand}" />
+                <Button Content="参照" 
+                        Command="{Binding ReferenceCommand}"
+                        Height="26"
+                        VerticalAlignment="Center"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="2">
@@ -145,10 +148,16 @@
                     VerticalAlignment="Center"/>
             </Grid>
             <Grid Grid.Column="1">
-                <control:TextBox Text="{Binding Regex.ReplaceExpression, Mode=TwoWay}" />
+                <control:TextBox 
+                    Text="{Binding Regex.ReplaceExpression, Mode=TwoWay}" 
+                    AcceptsReturn="False"
+                    FontSize="20" FontFamily="Consolas"
+                    Height="26"/>
             </Grid>
             <Grid Grid.Column="2">
-                <Button Content="参照" Command="{Binding ReferenceCommand}" />
+                <Button Content="参照" 
+                        Command="{Binding ReferenceCommand}" 
+                        Height="26"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="5">
@@ -162,7 +171,7 @@
                          VerticalAlignment="Center" />
             </Grid>
             <TextBox Grid.Column="1"
-                     Text="{Binding Regex.ReplacedText,Mode=OneWay}"
+                     Text="{Binding Regex.ReplacedText, Mode=OneWay}"
                      IsReadOnly="True"/>
         </Grid>
     </Grid>

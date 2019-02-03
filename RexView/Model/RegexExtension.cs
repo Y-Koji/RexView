@@ -11,6 +11,11 @@ namespace RexView.Model
     {
         public static RegexOptions Aggregate(this IEnumerable<RegexOption> self)
         {
+            if (null == self)
+            {
+                return RegexOptions.None;
+            }
+
             IList<RegexOptions> options = new List<RegexOptions>();
 
             foreach (var option in self)

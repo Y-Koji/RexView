@@ -3,42 +3,76 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 
 namespace RexView.Model
 {
+    [DataContract]
     public class RegexModel : NotifyProperty, INotifyPropertyChanged, IDisposable
     {
-        public string Text { get => GetValue<string>(); set => SetValue(value, OnTextChanged); }
-        public string RegexText { get => GetValue<string>(); set => SetValue(value, OnTextChanged); }
-        public string ReplaceExpression { get => GetValue<string>(); set => SetValue(value, OnTextChanged); }
-        public string ReplacedText { get => GetValue<string>(); set => SetValue(value); }
+        private static string FILE_NAME { get; } = $"{nameof(RegexModel)}.json";
+        private static DataContractJsonSerializer Serializer { get; } = new DataContractJsonSerializer(typeof(RegexModel));
 
-        public ObservableCollection<ObservableCollection<Group>> MatchGroups { get; }
-        public ObservableCollection<RegexOption> MatchOptions { get; }
+        [DataMember]
+        public string Text { get => GetValue(string.Empty); set => SetValue(value, OnTextChanged); }
+        [DataMember]
+        public string RegexText { get => GetValue(string.Empty); set => SetValue(value, OnTextChanged); }
+        [DataMember]
+        public string ReplaceExpression { get => GetValue(string.Empty); set => SetValue(value, OnTextChanged); }
+        [DataMember]
+        public string ReplacedText { get => GetValue(string.Empty); set => SetValue(value); }
 
+        public ObservableCollection<ObservableCollection<Group>> MatchGroups
+        {
+            get => GetValue(new ObservableCollection<ObservableCollection<Group>>());
+        }
+        
+        [DataMember]
+        public ObservableCollection<RegexOption> MatchOptions
+        {
+            get => GetValue(new ObservableCollection<RegexOption>());
+            set => SetValue(value);
+        }
+
+        public ICommand InitializeCommand { get => GetValue<ICommand>(new ActionCommand(Initialize)); set => SetValue(value); }
         public ICommand ErrorCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         public ICommand MatchCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         
-        public RegexModel() : base()
+        private void Initialize()
         {
-            MatchGroups = new ObservableCollection<ObservableCollection<Group>>();
-            MatchOptions = new ObservableCollection<RegexOption>();
-            foreach (RegexOptions option in Enum.GetValues(typeof(RegexOptions)))
+            if (0 < MatchOptions.Count)
             {
-                RegexOption regexOption = new RegexOption
+                foreach (var regexOption in MatchOptions)
                 {
-                    RegexOptions = MatchOptions,
-                    OptionName = option.ToString(),
-                    OptionValue = option,
-                    IsChecked = false,
-                };
+                    if (0 == regexOption.RegexOptions.Count)
+                    {
+                        MatchOptions.ToList().ForEach(regexOption.RegexOptions.Add);
+                    }
 
-                regexOption.SetHandler(nameof(RegexOption.IsChecked), OnTextChanged);
+                    regexOption.SetHandler(nameof(RegexOption.IsChecked), OnTextChanged);
+                }
+            }
+            else
+            {
+                foreach (RegexOptions option in Enum.GetValues(typeof(RegexOptions)))
+                {
+                    RegexOption regexOption = new RegexOption
+                    {
+                        RegexOptions = MatchOptions,
+                        OptionName = option.ToString(),
+                        OptionValue = option,
+                        IsChecked = false,
+                    };
 
-                MatchOptions.Add(regexOption);
+                    regexOption.SetHandler(nameof(RegexOption.IsChecked), OnTextChanged);
+
+                    MatchOptions.Add(regexOption);
+                }
             }
         }
 
@@ -49,7 +83,7 @@ namespace RexView.Model
                 match.Clear();
             }
 
-            MatchGroups.Clear();
+            MatchGroups?.Clear();
         }
 
         private bool Test(string text, string regex, RegexOptions options)
@@ -72,6 +106,11 @@ namespace RexView.Model
         
         public void OnTextChanged()
         {
+            if (null == MatchGroups)
+            {
+                return;
+            }
+
             Clear();
 
             var options = MatchOptions.Aggregate();
@@ -94,11 +133,42 @@ namespace RexView.Model
                 }
             }
 
-            ReplacedText = Regex.Replace(Text, RegexText, ReplaceExpression);
+            ReplacedText = Regex.Replace(Text, RegexText, Regex.Unescape(ReplaceExpression));
+        }
+
+        public static RegexModel Load()
+        {
+            if (!File.Exists(FILE_NAME))
+            {
+                return new RegexModel();
+            }
+
+            try
+            {
+                using (FileStream fs = File.OpenRead(FILE_NAME))
+                {
+                    return Serializer.ReadObject(fs) as RegexModel;
+                }
+            }
+            catch (Exception e)
+            {
+                File.Delete(FILE_NAME);
+
+                return new RegexModel();
+            }
+        }
+
+        public void Save()
+        {
+            using (FileStream fs = File.Create(FILE_NAME))
+            {
+                Serializer.WriteObject(fs, this);
+            }
         }
 
         public void Dispose()
         {
+            Save();
             Clear();
             MatchOptions.Clear();
         }

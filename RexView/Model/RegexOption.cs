@@ -1,25 +1,30 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
 namespace RexView.Model
 {
+    [DataContract]
     public class RegexOption : NotifyProperty, INotifyPropertyChanged
     {
         public ObservableCollection<RegexOption> RegexOptions
         {
-            get => GetValue<ObservableCollection<RegexOption>>();
+            get => GetValue(new ObservableCollection<RegexOption>());
             set => SetValue(value);
         }
 
-        public string OptionName { get => GetValue<string>(); set => SetValue(value); }
+        [DataMember]
+        public string OptionName { get => GetValue(string.Empty); set => SetValue(value); }
 
+        [DataMember]
         public RegexOptions OptionValue { get => GetValue<RegexOptions>(); set => SetValue(value); }
 
+        [DataMember]
         public bool IsChecked
         {
-            get => GetValue<bool>();
+            get => GetValue(false);
             set
             {
                 try
