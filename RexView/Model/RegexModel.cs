@@ -15,9 +15,12 @@ namespace RexView.Model
     [DataContract]
     public class RegexModel : NotifyProperty, INotifyPropertyChanged, IDisposable
     {
-        private static string FILE_NAME { get; } = $"{nameof(RegexModel)}.json";
+        private static string REGEX_DIR { get; } = "regex";
+        private static string REGEX_PATH_FORMAT { get; } = $"{REGEX_DIR}\\{{0}}.json";
         private static DataContractJsonSerializer Serializer { get; } = new DataContractJsonSerializer(typeof(RegexModel));
 
+        [DataMember]
+        public string Name { get => GetValue(nameof(RegexModel)); set => SetValue(value); }
         [DataMember]
         public string Text { get => GetValue(string.Empty); set => SetValue(value, OnTextChanged); }
         [DataMember]
@@ -26,6 +29,13 @@ namespace RexView.Model
         public string ReplaceExpression { get => GetValue(string.Empty); set => SetValue(value, OnTextChanged); }
         [DataMember]
         public string ReplacedText { get => GetValue(string.Empty); set => SetValue(value); }
+
+        private bool IsDeleted { get; set; } = false;
+        
+        public RegexModel(string name)
+        {
+            Name = name;
+        }
 
         public ObservableCollection<ObservableCollection<Group>> MatchGroups
         {
@@ -136,39 +146,83 @@ namespace RexView.Model
             ReplacedText = Regex.Replace(Text, RegexText, Regex.Unescape(ReplaceExpression));
         }
 
-        public static RegexModel Load()
+        public static RegexModel Load(string name)
         {
-            if (!File.Exists(FILE_NAME))
+            string fileName = string.Format(REGEX_PATH_FORMAT, name);
+
+            if (!Directory.Exists(REGEX_DIR))
             {
-                return new RegexModel();
+                Directory.CreateDirectory(REGEX_DIR);
+            }
+
+            if (!File.Exists(fileName))
+            {
+                return new RegexModel(name);
             }
 
             try
             {
-                using (FileStream fs = File.OpenRead(FILE_NAME))
+                using (FileStream fs = File.OpenRead(fileName))
                 {
-                    return Serializer.ReadObject(fs) as RegexModel;
+                    RegexModel model =  Serializer.ReadObject(fs) as RegexModel;
+                    model.Name = name;
+
+                    return model;
                 }
             }
             catch (Exception e)
             {
-                File.Delete(FILE_NAME);
+                File.Delete(fileName);
 
-                return new RegexModel();
+                return new RegexModel(name);
+            }
+        }
+
+        public static IEnumerable<RegexModel> Loads()
+        {
+            if (!Directory.Exists(REGEX_DIR))
+            {
+                Directory.CreateDirectory(REGEX_DIR);
+            }
+
+            foreach (var fileName in Directory.GetFiles(REGEX_DIR, "*.json"))
+            {
+                yield return Load(Path.GetFileNameWithoutExtension(fileName));
             }
         }
 
         public void Save()
         {
-            using (FileStream fs = File.Create(FILE_NAME))
+            if (!Directory.Exists(REGEX_DIR))
+            {
+                Directory.CreateDirectory(REGEX_DIR);
+            }
+
+            using (FileStream fs = File.Create(string.Format(REGEX_PATH_FORMAT, Name)))
             {
                 Serializer.WriteObject(fs, this);
             }
         }
 
+        public void Delete()
+        {
+            if (File.Exists(string.Format(REGEX_PATH_FORMAT, Name)))
+            {
+                File.Delete(string.Format(REGEX_PATH_FORMAT, Name));
+            }
+
+            IsDeleted = true;
+
+            Dispose();
+        }
+
         public void Dispose()
         {
-            Save();
+            if (!IsDeleted)
+            {
+                Save();
+            }
+
             Clear();
             MatchOptions.Clear();
         }

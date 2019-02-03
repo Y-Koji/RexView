@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Model\ActionCommand.cs" />
     <Compile Include="Model\Control\RegexTextBox.cs" />
+    <Compile Include="Model\Control\TemplateSelector.cs" />
     <Compile Include="Model\NullCommand.cs" />
     <Compile Include="Model\Control\TextBox.cs" />
     <Compile Include="Model\RegexExtension.cs" />
@@ -72,6 +73,9 @@
     <Compile Include="Model\NotifyProperty.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RegexView.xaml.cs">
+      <DependentUpon>RegexView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="View\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RegexView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
