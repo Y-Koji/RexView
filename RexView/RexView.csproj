@@ -64,7 +64,9 @@
     <Compile Include="Model\Control\RegexTextBox.cs" />
     <Compile Include="Model\NullCommand.cs" />
     <Compile Include="Model\Control\TextBox.cs" />
+    <Compile Include="Model\RegexExtension.cs" />
     <Compile Include="Model\RegexModel.cs" />
+    <Compile Include="Model\RegexOption.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Model\NotifyProperty.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

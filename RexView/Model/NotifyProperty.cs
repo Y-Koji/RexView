@@ -44,5 +44,16 @@ namespace RexView.Model
 
             foward?.Invoke();
         }
+
+        public void SetHandler(string propName, Action handler)
+        {
+            PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == propName)
+                {
+                    handler?.Invoke();
+                }
+            };
+        }
     }
 }

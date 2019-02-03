@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -14,7 +16,8 @@ namespace RexView.Model
         public string ReplaceExpression { get => GetValue<string>(); set => SetValue(value, OnTextChanged); }
         public string ReplacedText { get => GetValue<string>(); set => SetValue(value); }
 
-        public ObservableCollection<ObservableCollection<Group>> MatchGroups { get; private set; }
+        public ObservableCollection<ObservableCollection<Group>> MatchGroups { get; }
+        public ObservableCollection<RegexOption> MatchOptions { get; }
 
         public ICommand ErrorCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         public ICommand MatchCommand { get => GetValue<ICommand>(); set => SetValue(value); }
@@ -22,6 +25,21 @@ namespace RexView.Model
         public RegexModel() : base()
         {
             MatchGroups = new ObservableCollection<ObservableCollection<Group>>();
+            MatchOptions = new ObservableCollection<RegexOption>();
+            foreach (RegexOptions option in Enum.GetValues(typeof(RegexOptions)))
+            {
+                RegexOption regexOption = new RegexOption
+                {
+                    RegexOptions = MatchOptions,
+                    OptionName = option.ToString(),
+                    OptionValue = option,
+                    IsChecked = false,
+                };
+
+                regexOption.SetHandler(nameof(RegexOption.IsChecked), OnTextChanged);
+
+                MatchOptions.Add(regexOption);
+            }
         }
 
         private void Clear()
@@ -34,28 +52,36 @@ namespace RexView.Model
             MatchGroups.Clear();
         }
 
-        private bool Test(string text, string regex)
+        private bool Test(string text, string regex, RegexOptions options)
         {
             try
             {
-                return Regex.IsMatch(text, regex);
+                return Regex.IsMatch(text, regex, options);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                // 正規表現オプション 例外
+                return false;
             }
             catch (Exception e)
             {
+                // 正規表現 例外
                 return false;
             }
         }
-
+        
         public void OnTextChanged()
         {
             Clear();
-            
-            if (!Test(Text, RegexText))
+
+            var options = MatchOptions.Aggregate();
+
+            if (!Test(Text, RegexText, options))
             {
                 return;
             }
 
-            foreach (Match match in Regex.Matches(Text, RegexText))
+            foreach (Match match in Regex.Matches(Text, RegexText, options))
             {
                 while (MatchGroups.Count < match.Groups.Count)
                 {
@@ -73,7 +99,8 @@ namespace RexView.Model
 
         public void Dispose()
         {
-
+            Clear();
+            MatchOptions.Clear();
         }
     }
 }

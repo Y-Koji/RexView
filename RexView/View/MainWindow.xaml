@@ -29,7 +29,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
             <RowDefinition Height="30" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="100" />
             <RowDefinition Height="30" />
             <RowDefinition />
@@ -80,7 +80,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition />
-                <ColumnDefinition Width="30" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <TextBlock 
@@ -89,10 +88,23 @@
                     VerticalAlignment="Center"/>
             </Grid>
             <Grid Grid.Column="1">
-                <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <CheckBox Content="MultilLine" />
-                </StackPanel>
+                <ListBox ItemsSource="{Binding Regex.MatchOptions}" 
+                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel  IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <CheckBox Content="{Binding OptionName}" 
+                                          IsChecked="{Binding IsChecked,ValidatesOnExceptions=True}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
         </Grid>
         <Grid Grid.Row="3">
