@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:RexView.View"
              xmlns:m="clr-namespace:RexView.Model"
              xmlns:vm="clr-namespace:RexView.ViewModel"
+             xmlns:cmd="clr-namespace:RexView.Model.Command"
              xmlns:control="clr-namespace:RexView.Model.Control"
              xmlns:reg="clr-namespace:System.Text.RegularExpressions;assembly=System"
              xmlns:behavior="clr-namespace:RexView.Model.Behaviors"
@@ -14,171 +15,188 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              d:DataContext="{x:Type m:RegexModel}">
-    
+
     <Grid Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
-            <RowDefinition Height="30" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="100" />
-            <RowDefinition Height="30" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TextBlock 
+        <Grid x:Name="mainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="50" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="30" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock 
                     Text="入力"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"/>
-            </Grid>
-            <Grid Grid.Column="1">
-                <control:TextBox 
+                </Grid>
+                <Grid Grid.Column="1">
+                    <control:TextBox 
                     Text="{Binding Text, Mode=TwoWay}" 
                     FontSize="12"
                     Block.LineHeight="1" MatchGroups="{Binding MatchGroups}"
                     VerticalScrollBarVisibility="Auto">
-                    <i:Interaction.Behaviors>
-                        <behavior:FileDragDropBehavior Command="{Binding FileDropCommand}" />
-                    </i:Interaction.Behaviors>
-                </control:TextBox>
+                        <i:Interaction.Behaviors>
+                            <behavior:FileDragDropBehavior Command="{Binding FileDropCommand}" />
+                        </i:Interaction.Behaviors>
+                    </control:TextBox>
+                </Grid>
             </Grid>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="30" />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TextBlock 
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock 
                     Text="正規表現"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"/>
-            </Grid>
-            <Grid Grid.Column="1">
-                <control:RegexTextBox 
+                </Grid>
+                <Grid Grid.Column="1">
+                    <control:RegexTextBox 
                     Text="{Binding RegexText, Mode=TwoWay, ValidatesOnDataErrors=True}"
                     VerticalAlignment="Center"
                     FontSize="20" 
                     AcceptsReturn="False" FontFamily="Consolas">
-                    <control:RegexTextBox.Style>
-                        <Style TargetType="{x:Type control:RegexTextBox}">
-                            <Style.Triggers>
-                                <Trigger Property="Validation.HasError" Value="true">
-                                    <Setter Property="Background" Value="MistyRose" />
-                                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self},Path=(Validation.Errors)[0].ErrorContent}" />
-                                    <Setter Property="ToolTip.Visibility" Value="Visible" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </control:RegexTextBox.Style>
-                </control:RegexTextBox>
-            </Grid>
-            <Grid Grid.Column="2">
-                <Button Content="参照" 
-                        Command="{Binding ReferenceCommand}"
+                        <control:RegexTextBox.Style>
+                            <Style TargetType="{x:Type control:RegexTextBox}">
+                                <Style.Triggers>
+                                    <Trigger Property="Validation.HasError" Value="true">
+                                        <Setter Property="Background" Value="MistyRose" />
+                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self},Path=(Validation.Errors)[0].ErrorContent}" />
+                                        <Setter Property="ToolTip.Visibility" Value="Visible" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </control:RegexTextBox.Style>
+                    </control:RegexTextBox>
+                </Grid>
+                <Grid Grid.Column="2">
+                    <ToggleButton
+                        Content="参照" 
+                        IsChecked="{Binding IsReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}"        
                         Height="26"
                         VerticalAlignment="Center"/>
+                </Grid>
             </Grid>
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TextBlock 
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock 
                     Text="オプション"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"/>
-            </Grid>
-            <Grid Grid.Column="1">
-                <ListBox ItemsSource="{Binding MatchOptions}" 
+                </Grid>
+                <Grid Grid.Column="1">
+                    <ListBox ItemsSource="{Binding MatchOptions}" 
                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel  IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <CheckBox Content="{Binding OptionName}" 
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel  IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <CheckBox Content="{Binding OptionName}" 
                                           IsChecked="{Binding IsChecked,ValidatesOnExceptions=True}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
             </Grid>
-        </Grid>
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TextBlock Text="マッチグループ"
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock Text="マッチグループ"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center" />
+                </Grid>
+                <TabControl Grid.Column="1" ItemsSource="{Binding MatchGroups}">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ListBox ItemsSource="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
             </Grid>
-            <TabControl Grid.Column="1" ItemsSource="{Binding MatchGroups}">
-                <TabControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </TabControl.ItemTemplate>
-                <TabControl.ContentTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <ListBox ItemsSource="{Binding}" />
-                        </Grid>
-                    </DataTemplate>
-                </TabControl.ContentTemplate>
-            </TabControl>
-        </Grid>
-        <Grid Grid.Row="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="30" />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TextBlock 
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock 
                     Text="置換"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"/>
-            </Grid>
-            <Grid Grid.Column="1">
-                <control:TextBox 
+                </Grid>
+                <Grid Grid.Column="1">
+                    <control:TextBox 
                     Text="{Binding ReplaceExpression, Mode=TwoWay}" 
                     AcceptsReturn="False"
                     FontSize="20" FontFamily="Consolas"
                     Height="26"/>
-            </Grid>
-            <Grid Grid.Column="2">
-                <Button Content="参照" 
+                </Grid>
+                <Grid Grid.Column="2">
+                    <Button Content="参照" 
                         Command="{Binding ReferenceCommand}" 
                         Height="26"/>
+                </Grid>
             </Grid>
-        </Grid>
-        <Grid Grid.Row="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <TextBlock Text="置換結果"
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <TextBlock Text="置換結果"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center" />
-            </Grid>
-            <TextBox Grid.Column="1"
+                </Grid>
+                <TextBox Grid.Column="1"
                      Text="{Binding ReplacedText, Mode=OneWay}"
                      IsReadOnly="True"/>
+            </Grid>
+        </Grid>
+        <Grid x:Name="regexReference">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" Value="True">
+                            <Setter Property="Background" Value="Red" />
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <local:ReferenceView />
         </Grid>
     </Grid>
 </UserControl>

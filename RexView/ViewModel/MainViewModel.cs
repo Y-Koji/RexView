@@ -16,18 +16,23 @@ namespace RexView.ViewModel
         public ICommand DisposeCommand { get => GetValue(new ActionCommand(Dispose)); set => SetValue(value); }
 
         public string Title { get => GetValue("RexView"); set => SetValue(value); }
-        
+
+        public RegexCollection RegexCollectionModel { get => GetValue<RegexCollection>(null); private set => SetValue(value); }
+
         public ObservableCollection<RegexModel> Regexes
         {
             get => GetValue(new ObservableCollection<RegexModel>());
             set => SetValue(value);
         }
         
-        private void Initialize()
+        private async void Initialize()
         {
+            RegexCollectionModel = await RegexCollection.LoadAsync();
+
             foreach (var regex in RegexModel.Loads())
             {
                 Regexes.Add(regex);
+                regex.RegexCollection = RegexCollectionModel;
                 regex.Initialize();
             }
 
@@ -43,6 +48,7 @@ namespace RexView.ViewModel
         private void AddRegex()
         {
             RegexModel model = new RegexModel("Regex_" + Regexes.Count);
+            model.RegexCollection = RegexCollectionModel;
             model.Initialize();
             Regexes.Add(model);
         }
@@ -61,6 +67,8 @@ namespace RexView.ViewModel
             {
                 regex.Dispose();
             }
+
+            RegexCollectionModel.Dispose();
         }
     }
 }

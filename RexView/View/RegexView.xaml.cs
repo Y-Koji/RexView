@@ -24,5 +24,15 @@ namespace RexView.View
         {
             InitializeComponent();
         }
+
+        public bool IsReferenceMode
+        {
+            get { return (bool)GetValue(IsReferenceModeProperty); }
+            set { SetValue(IsReferenceModeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsReferenceMode.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsReferenceModeProperty =
+            DependencyProperty.Register("IsReferenceMode", typeof(bool), typeof(RegexView), new PropertyMetadata(false));
     }
 }

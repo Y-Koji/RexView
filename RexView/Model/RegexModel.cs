@@ -50,6 +50,8 @@ namespace RexView.Model
             get => GetValue(new DispatchObservableCollection<RegexOption>());
             set => SetValue(value);
         }
+
+        public RegexCollection RegexCollection { get => GetValue<RegexCollection>(null); set => SetValue(value); }
         
         public ICommand FileDropCommand { get => GetValue<ICommand>(new ActionCommand(FileDrop)); set => SetValue(value); }
         public ICommand ErrorCommand { get => GetValue<ICommand>(); set => SetValue(value); }
@@ -260,6 +262,7 @@ namespace RexView.Model
 
             Clear();
             MatchOptions.Clear();
+
         }
 
         public IEnumerable GetErrors(string propertyName)
