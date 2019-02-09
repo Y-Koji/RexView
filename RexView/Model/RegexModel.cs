@@ -9,12 +9,13 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace RexView.Model
 {
     [DataContract]
-    public class RegexModel : NotifyProperty, INotifyPropertyChanged, IDisposable
+    public class RegexModel : NotifyProperty, INotifyPropertyChanged, INotifyDataErrorInfo, IDisposable
     {
         private static string REGEX_DIR { get; } = "regex";
         private static string REGEX_PATH_FORMAT { get; } = $"{REGEX_DIR}\\{{0}}.json";
@@ -38,24 +39,29 @@ namespace RexView.Model
             Name = name;
         }
 
-        public ObservableCollection<ObservableCollection<Group>> MatchGroups
+        public DispatchObservableCollection<DispatchObservableCollection<Group>> MatchGroups
         {
-            get => GetValue(new ObservableCollection<ObservableCollection<Group>>());
+            get => GetValue(new DispatchObservableCollection<DispatchObservableCollection<Group>>());
         }
-        
+       
         [DataMember]
-        public ObservableCollection<RegexOption> MatchOptions
+        public DispatchObservableCollection<RegexOption> MatchOptions
         {
-            get => GetValue(new ObservableCollection<RegexOption>());
+            get => GetValue(new DispatchObservableCollection<RegexOption>());
             set => SetValue(value);
         }
-
-        public ICommand InitializeCommand { get => GetValue<ICommand>(new ActionCommand(Initialize)); set => SetValue(value); }
+        
         public ICommand FileDropCommand { get => GetValue<ICommand>(new ActionCommand(FileDrop)); set => SetValue(value); }
         public ICommand ErrorCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         public ICommand MatchCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         
-        private void Initialize()
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        
+        public IDictionary<string, IList<string>> Errors { get => GetValue(new Dictionary<string, IList<string>>()); set => SetValue(value); }
+        
+        public bool HasErrors => 0 < Errors.Count;
+        
+        public void Initialize()
         {
             if (0 < MatchOptions.Count)
             {
@@ -107,6 +113,7 @@ namespace RexView.Model
 
         private void Clear()
         {
+
             foreach (var match in MatchGroups)
             {
                 match.Clear();
@@ -115,25 +122,34 @@ namespace RexView.Model
             MatchGroups?.Clear();
         }
 
-        private bool Test(string text, string regex, RegexOptions options)
+        private async Task<bool> Test(string text, string regex, RegexOptions options)
         {
+            if (Errors.ContainsKey(nameof(RegexText)))
+            {
+                Errors.Remove(nameof(RegexText));
+            }
+
             try
             {
-                return Regex.IsMatch(text, regex, options);
+                return await Task.Run(() => Regex.IsMatch(text, regex, options));
             }
             catch (ArgumentOutOfRangeException e)
             {
                 // 正規表現オプション 例外
+                Errors[nameof(RegexText)] = new List<string> { e.Message, };
+                ErrorsChanged.Invoke(this, new DataErrorsChangedEventArgs(nameof(RegexText)));
                 return false;
             }
             catch (Exception e)
             {
                 // 正規表現 例外
+                Errors[nameof(RegexText)] = new List<string> { e.Message, };
+                ErrorsChanged.Invoke(this, new DataErrorsChangedEventArgs(nameof(RegexText)));
                 return false;
             }
         }
         
-        public void OnTextChanged()
+        public async void OnTextChanged()
         {
             if (null == MatchGroups)
             {
@@ -144,7 +160,7 @@ namespace RexView.Model
 
             var options = MatchOptions.Aggregate();
 
-            if (!Test(Text, RegexText, options))
+            if (!await Test(Text, RegexText, options))
             {
                 return;
             }
@@ -153,7 +169,7 @@ namespace RexView.Model
             {
                 while (MatchGroups.Count < match.Groups.Count)
                 {
-                    MatchGroups.Add(new ObservableCollection<Group>());
+                    MatchGroups.Add(new DispatchObservableCollection<Group>());
                 }
 
                 for (int i = 0;i < match.Groups.Count;i++)
@@ -244,6 +260,19 @@ namespace RexView.Model
 
             Clear();
             MatchOptions.Clear();
+        }
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            if (!string.IsNullOrWhiteSpace(propertyName))
+            {
+                if (Errors.ContainsKey(propertyName))
+                {
+                    return Errors[propertyName];
+                }
+            }
+
+            return new List<string>();
         }
     }
 }

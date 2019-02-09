@@ -65,6 +65,7 @@
     <Compile Include="Model\Behaviors\FileDragDropBehavior.cs" />
     <Compile Include="Model\Control\RegexTextBox.cs" />
     <Compile Include="Model\Control\TemplateSelector.cs" />
+    <Compile Include="Model\DispatchObservableCollection.cs" />
     <Compile Include="Model\NullCommand.cs" />
     <Compile Include="Model\Control\TextBox.cs" />
     <Compile Include="Model\RegexExtension.cs" />

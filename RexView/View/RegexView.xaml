@@ -39,7 +39,7 @@
                 <control:TextBox 
                     Text="{Binding Text, Mode=TwoWay}" 
                     FontSize="12"
-                    Block.LineHeight="1"
+                    Block.LineHeight="1" MatchGroups="{Binding MatchGroups}"
                     VerticalScrollBarVisibility="Auto">
                     <i:Interaction.Behaviors>
                         <behavior:FileDragDropBehavior Command="{Binding FileDropCommand}" />
@@ -61,10 +61,22 @@
             </Grid>
             <Grid Grid.Column="1">
                 <control:RegexTextBox 
-                    Text="{Binding RegexText, Mode=TwoWay}"
+                    Text="{Binding RegexText, Mode=TwoWay, ValidatesOnDataErrors=True}"
                     VerticalAlignment="Center"
                     FontSize="20" 
-                    AcceptsReturn="False" FontFamily="Consolas"/>
+                    AcceptsReturn="False" FontFamily="Consolas">
+                    <control:RegexTextBox.Style>
+                        <Style TargetType="{x:Type control:RegexTextBox}">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="true">
+                                    <Setter Property="Background" Value="MistyRose" />
+                                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self},Path=(Validation.Errors)[0].ErrorContent}" />
+                                    <Setter Property="ToolTip.Visibility" Value="Visible" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </control:RegexTextBox.Style>
+                </control:RegexTextBox>
             </Grid>
             <Grid Grid.Column="2">
                 <Button Content="参照" 

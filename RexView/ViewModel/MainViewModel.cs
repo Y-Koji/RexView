@@ -28,7 +28,7 @@ namespace RexView.ViewModel
             foreach (var regex in RegexModel.Loads())
             {
                 Regexes.Add(regex);
-                regex.InitializeCommand.Execute(new object());
+                regex.Initialize();
             }
 
             IEditableCollectionView regexesView = CollectionViewSource.GetDefaultView(Regexes) as IEditableCollectionView;
@@ -43,7 +43,7 @@ namespace RexView.ViewModel
         private void AddRegex()
         {
             RegexModel model = new RegexModel("Regex_" + Regexes.Count);
-            model.InitializeCommand.Execute(new object());
+            model.Initialize();
             Regexes.Add(model);
         }
 
