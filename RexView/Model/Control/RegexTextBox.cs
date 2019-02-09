@@ -154,6 +154,8 @@ namespace RexView.Model.Control
                 {
                     word.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Color.FromArgb(0, 0, 0, 0)));
                 }
+
+                CaretBrush = TextBrush;
                 
                 isEscaping = false;
                 sb.Append(word.Text);
