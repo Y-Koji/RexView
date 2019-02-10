@@ -13,7 +13,7 @@ namespace RexView.Model
     public class RegexCollection : DispatchObservableCollection<RegexCollectionItem>, IDisposable
     {
         private static string FILE_NAME { get; } = "map.json";
-        private static DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(RegexCollectionItemModel[]));
+        private static DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(RegexCollectionItemModel[]), new Type[] { typeof(CloneableList<ReferenceItemModel>) });
 
         private RegexCollection() { }
 
@@ -30,19 +30,37 @@ namespace RexView.Model
 
                 using (var fs = File.OpenRead(FILE_NAME))
                 {
-                    return Serializer.ReadObject(fs) as RegexCollectionItemModel[];
+                    try
+                    {
+                        return Serializer.ReadObject(fs) as RegexCollectionItemModel[];
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        Console.WriteLine(e.StackTrace);
+
+                        return Enumerable.Empty<RegexCollectionItemModel>();
+                    }
                 }
             });
 
             foreach (var model in models)
             {
-                collection.Add(new RegexCollectionItem
+                var item = new RegexCollectionItem
                 {
-                    Id = model.Id,
+                    Id = model.Id ?? string.Empty,
                     Index = model.Index,
-                    Name = model.Name,
-                    Regex = model.Regex,
-                });
+                    Name = model.Name ?? string.Empty,
+                    Value = model.Value ?? string.Empty,
+                    RegexReplaceExpressionCollection = new DispatchObservableCollection<IReferenceItem>(),
+                };
+
+                foreach (var reference in model.RegexReplaceExpressionCollection ?? new DispatchObservableCollection<ReferenceItemModel>())
+                {
+                    item.RegexReplaceExpressionCollection.Add(reference);
+                }
+
+                collection.Add(item);
             }
 
             return collection;
@@ -50,16 +68,21 @@ namespace RexView.Model
 
         public void Save()
         {
+            var model = this.Select(x => new RegexCollectionItemModel
+            {
+                Id = x.Id,
+                Index = x.Index,
+                Name = x.Name,
+                Value = x.Value,
+                RegexReplaceExpressionCollection =
+                    x.RegexReplaceExpressionCollection
+                     .OfType<ReferenceItemModel>()
+                     .Aggregate(new CloneableList<ReferenceItemModel>(),
+                                (collection, item) => { collection.Add(item); return collection; }),
+            }).ToArray();
+
             using (FileStream fs = File.Create(FILE_NAME))
             {
-                var model = this.Select(x => new RegexCollectionItemModel
-                {
-                    Id = x.Id,
-                    Index = x.Index,
-                    Name = x.Name,
-                    Regex = x.Regex,
-                }).ToArray();
-
                 Serializer.WriteObject(fs, model);
             }
         }

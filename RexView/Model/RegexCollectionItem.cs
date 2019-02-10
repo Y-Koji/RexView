@@ -1,11 +1,11 @@
 ﻿using RexView.Model.Serialize;
 using System;
-using System.Runtime.Serialization;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace RexView.Model
 {
-    public class RegexCollectionItem : Freezable, ICloneable, IRegexCollectionItem
+    public class RegexCollectionItem : Freezable, ICloneable, IRegexCollectionItem<IReferenceItem>
     {
         public string Id
         {
@@ -37,24 +37,34 @@ namespace RexView.Model
         public static readonly DependencyProperty NameProperty =
             DependencyProperty.Register("Name", typeof(string), typeof(RegexCollectionItem), new PropertyMetadata(string.Empty));
         
-        public string Regex
+        public string Value
         {
-            get { return (string)GetValue(RegexProperty); }
-            set { SetValue(RegexProperty, value); }
+            get { return (string)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Regex.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RegexProperty =
-            DependencyProperty.Register("Regex", typeof(string), typeof(RegexCollectionItem), new PropertyMetadata(string.Empty));
+        // Using a DependencyProperty as the backing store for Value.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ValueProperty =
+            DependencyProperty.Register("Value", typeof(string), typeof(RegexCollectionItem), new PropertyMetadata(string.Empty));
+        
+        public ICollection<IReferenceItem> RegexReplaceExpressionCollection
+        {
+            get { return (ICloneableCollection<IReferenceItem>)GetValue(RegexReplaceExpressionCollectionProperty); }
+            set { SetValue(RegexReplaceExpressionCollectionProperty, value); }
+        }
 
-
+        // Using a DependencyProperty as the backing store for RegexReplaceExpressionCollection.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RegexReplaceExpressionCollectionProperty =
+            DependencyProperty.Register("RegexReplaceExpressionCollection", typeof(ICollection<IReferenceItem>), typeof(RegexCollectionItem), new PropertyMetadata(new DispatchObservableCollection<IReferenceItem>()));
+        
         object ICloneable.Clone()
         {
             return new RegexCollectionItem
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Name = this.Name,
-                Regex = this.Regex,
+                Value = this.Value,
+                RegexReplaceExpressionCollection = (RegexReplaceExpressionCollection as ICloneableCollection<IReferenceItem>).Clone(),
             };
         }
 

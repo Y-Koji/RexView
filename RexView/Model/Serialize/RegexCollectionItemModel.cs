@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace RexView.Model.Serialize
 {
     [DataContract]
-    public class RegexCollectionItemModel : IRegexCollectionItem
+    public class RegexCollectionItemModel : IRegexCollectionItem<ReferenceItemModel>
     {
         [DataMember]
         public string Id { get; set; }
@@ -17,6 +17,8 @@ namespace RexView.Model.Serialize
         [DataMember]
         public string Name { get; set; }
         [DataMember]
-        public string Regex { get; set; }
+        public string Value { get; set; }
+        [DataMember]
+        public ICollection<ReferenceItemModel> RegexReplaceExpressionCollection { get; set; }
     }
 }

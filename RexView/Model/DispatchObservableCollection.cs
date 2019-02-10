@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RexView.Model.Serialize;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -9,7 +10,7 @@ using System.Windows.Threading;
 namespace RexView.Model
 {
     // https://blog.okazuki.jp/entry/20100112/1263267397
-    public class DispatchObservableCollection<T> : ObservableCollection<T>
+    public class DispatchObservableCollection<T> : ObservableCollection<T>, ICloneableCollection<T>
     {
         // CollectionChangedイベントを発行するときに使用するディスパッチャ
         public Dispatcher EventDispatcher { get; set; }
@@ -58,6 +59,18 @@ namespace RexView.Model
             // Dispatcherが設定されていたら、今のスレッドとDispatcherのスレッドを見比べる
             return EventDispatcher == null ||
                 EventDispatcher.Thread == Thread.CurrentThread;
+        }
+        
+        ICloneableCollection<T> ICloneable<ICloneableCollection<T>>.Clone()
+        {
+            ICloneableCollection<T> collection = new DispatchObservableCollection<T>();
+
+            foreach (var item in this)
+            {
+                collection.Add(item);
+            }
+
+            return collection;
         }
     }
 }

@@ -43,7 +43,7 @@
                                 </Grid>
                                 <Grid Grid.Column="1">
                                     <control:RegexTextBox 
-                                        Text="{Binding Regex, Mode=TwoWay}" 
+                                        Text="{Binding Value, Mode=TwoWay}" 
                                         VerticalAlignment="Center"
                                         FontSize="20" 
                                         AcceptsReturn="False"
@@ -106,7 +106,7 @@
                         <Button.CommandParameter>
                             <cmd:AddRegexCommandParameter Collection="{Binding RegexCollection, Mode=OneWay}">
                                 <cmd:AddRegexCommandParameter.Regex>
-                                    <m:RegexCollectionItem Regex="{Binding RegexText}" />
+                                    <m:RegexCollectionItem Value="{Binding RegexText}" />
                                 </cmd:AddRegexCommandParameter.Regex>
                             </cmd:AddRegexCommandParameter>
                         </Button.CommandParameter>

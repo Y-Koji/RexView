@@ -18,7 +18,7 @@ namespace RexView.Model.Command
         {
             if (parameter is SelectRegexCommandParameter param)
             {
-                param.RegexModel.RegexText = param.Regex.Regex;
+                param.RegexModel.RegexText = param.Regex.Value;
             }
         }
     }

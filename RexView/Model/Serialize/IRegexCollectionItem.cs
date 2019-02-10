@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RexView.Model.Serialize
 {
-    public interface IRegexCollectionItem
+    public interface IRegexCollectionItem<T> : IReferenceItem where T: IReferenceItem
     {
-        string Id { get; set; }
-        int Index { get; set; }
-        string Name { get; set; }
-        string Regex { get; set; }
+        ICollection<T> RegexReplaceExpressionCollection { get; set; }
     }
 }

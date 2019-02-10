@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Model\ActionCommand.cs" />
     <Compile Include="Model\Behaviors\FileDragDropBehavior.cs" />
+    <Compile Include="Model\CloneableList.cs" />
     <Compile Include="Model\Command\AddRegexCommand.cs" />
     <Compile Include="Model\Command\AddRegexCommandParameter.cs" />
     <Compile Include="Model\Command\RemoveRegexCommand.cs" />
@@ -74,13 +75,18 @@
     <Compile Include="Model\DispatchObservableCollection.cs" />
     <Compile Include="Model\NullCommand.cs" />
     <Compile Include="Model\Control\TextBox.cs" />
+    <Compile Include="Model\ReferenceItem.cs" />
     <Compile Include="Model\RegexCollection.cs" />
     <Compile Include="Model\RegexCollectionItem.cs" />
     <Compile Include="Model\RegexExtension.cs" />
     <Compile Include="Model\RegexModel.cs" />
     <Compile Include="Model\RegexOption.cs" />
     <Compile Include="Model\Command\ReferenceModeExitCommand.cs" />
+    <Compile Include="Model\Serialize\ICloneable.cs" />
+    <Compile Include="Model\Serialize\ICloneableCollection.cs" />
+    <Compile Include="Model\Serialize\IReferenceItem.cs" />
     <Compile Include="Model\Serialize\IRegexCollectionItem.cs" />
+    <Compile Include="Model\Serialize\ReferenceItemModel.cs" />
     <Compile Include="Model\Serialize\RegexCollectionItemModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="Model\NotifyProperty.cs" />
