@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using RexView.Model.DataObject;
+using System.Windows;
 
 namespace RexView.Model.Command
 {

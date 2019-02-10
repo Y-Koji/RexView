@@ -1,19 +1,17 @@
-﻿using RexView.Model.Serialize;
+﻿using RexView.Model.DataType;
+using RexView.Model.Serialize;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace RexView.Model
+namespace RexView.Model.DataObject
 {
     public class RegexCollection : DispatchObservableCollection<RegexCollectionItem>, IDisposable
     {
         private static string FILE_NAME { get; } = "map.json";
-        private static DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(RegexCollectionItemModel[]), new Type[] { typeof(CloneableList<ReferenceItemModel>) });
+        private static DataContractJsonSerializer Serializer = new DataContractJsonSerializer(typeof(RegexCollectionItemModel[]));
 
         private RegexCollection() { }
 

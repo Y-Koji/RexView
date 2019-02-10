@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RexView.Model
+namespace RexView.Model.DataType
 {
     [Serializable]
     public class CloneableList<T> : List<T>, ICloneableCollection<T>

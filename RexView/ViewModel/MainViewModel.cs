@@ -1,4 +1,5 @@
 ﻿using RexView.Model;
+using RexView.Model.DataObject;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;

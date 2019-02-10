@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using RexView.Model;
 
-namespace RexView.Model
+namespace RexView.Model.DataObject
 {
     [DataContract]
     public class RegexOption : NotifyProperty, INotifyPropertyChanged

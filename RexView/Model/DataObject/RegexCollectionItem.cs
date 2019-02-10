@@ -1,9 +1,10 @@
-﻿using RexView.Model.Serialize;
+﻿using RexView.Model.DataType;
+using RexView.Model.Serialize;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace RexView.Model
+namespace RexView.Model.DataObject
 {
     public class RegexCollectionItem : Freezable, ICloneable, IRegexCollectionItem<IReferenceItem>
     {

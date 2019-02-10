@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Windows.Threading;
 
-namespace RexView.Model
+namespace RexView.Model.DataType
 {
     // https://blog.okazuki.jp/entry/20100112/1263267397
     public class DispatchObservableCollection<T> : ObservableCollection<T>, ICloneableCollection<T>

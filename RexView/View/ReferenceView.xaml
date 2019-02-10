@@ -5,6 +5,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:m="clr-namespace:RexView.Model"
+             xmlns:obj="clr-namespace:RexView.Model.DataObject"
              xmlns:control="clr-namespace:RexView.Model.Control"
              xmlns:cmd="clr-namespace:RexView.Model.Command"
              xmlns:local="clr-namespace:RexView.View"
@@ -106,7 +107,7 @@
                         <Button.CommandParameter>
                             <cmd:AddRegexCommandParameter Collection="{Binding RegexCollection, Mode=OneWay}">
                                 <cmd:AddRegexCommandParameter.Regex>
-                                    <m:RegexCollectionItem Value="{Binding RegexText}" />
+                                    <obj:RegexCollectionItem Value="{Binding RegexText}" />
                                 </cmd:AddRegexCommandParameter.Regex>
                             </cmd:AddRegexCommandParameter>
                         </Button.CommandParameter>

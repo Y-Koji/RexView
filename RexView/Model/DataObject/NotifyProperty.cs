@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
-namespace RexView.Model
+namespace RexView.Model.DataObject
 {
     [DataContract]
     public class NotifyProperty : INotifyPropertyChanged
