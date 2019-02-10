@@ -99,9 +99,9 @@
                             <cmd:AddValueCommand />
                         </Button.Command>
                         <Button.CommandParameter>
-                            <cmd:AddValueCommandParameter List="{Binding Mode=OneWay}">
+                            <cmd:AddValueCommandParameter List="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:ReferenceView}}}">
                                 <cmd:AddValueCommandParameter.Value>
-                                    <obj:ReferenceItem Value="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReferenceView}}}" />
+                                    <obj:ReferenceItem Value="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReferenceView}}}" />
                                 </cmd:AddValueCommandParameter.Value>
                             </cmd:AddValueCommandParameter>
                         </Button.CommandParameter>

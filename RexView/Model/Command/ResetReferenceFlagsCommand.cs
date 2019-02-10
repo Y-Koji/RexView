@@ -21,6 +21,10 @@ namespace RexView.Model.Command
             {
                 view.IsRegexReferenceMode = false;
                 view.IsReplaceExpressionReferenceMode = false;
+                if (view.DataContext is RegexModel model)
+                {
+                    model.OnTextChanged();
+                }
             }
         }
     }
