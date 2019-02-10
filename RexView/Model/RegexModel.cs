@@ -1,5 +1,6 @@
 ﻿using RexView.Model.DataObject;
 using RexView.Model.DataType;
+using RexView.Model.Serialize;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,6 +54,8 @@ namespace RexView.Model
 
         public RegexCollection RegexCollection { get => GetValue<RegexCollection>(null); set => SetValue(value); }
         
+        public RegexCollectionItem RegexCollectionItem { get => GetValue<RegexCollectionItem>(); set => SetValue(value); }
+
         public ICommand FileDropCommand { get => GetValue<ICommand>(new ActionCommand(FileDrop)); set => SetValue(value); }
         public ICommand ErrorCommand { get => GetValue<ICommand>(); set => SetValue(value); }
         public ICommand MatchCommand { get => GetValue<ICommand>(); set => SetValue(value); }
@@ -94,6 +97,8 @@ namespace RexView.Model
                     MatchOptions.Add(regexOption);
                 }
             }
+
+            OnTextChanged();
         }
 
         private void FileDrop(object obj)
@@ -153,6 +158,8 @@ namespace RexView.Model
         
         public async void OnTextChanged()
         {
+            RegexCollectionItem = RegexCollection?.FirstOrDefault(x => x.Value == RegexText);
+
             if (null == MatchGroups)
             {
                 return;

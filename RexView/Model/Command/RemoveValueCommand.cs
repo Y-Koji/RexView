@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace RexView.Model.Command
 {
-    public class RemoveRegexCommand : ICommand
+    public class RemoveValueCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
@@ -16,9 +16,9 @@ namespace RexView.Model.Command
 
         public void Execute(object parameter)
         {
-            if (parameter is RemoveRegexCommandParameter param)
+            if (parameter is RemoveValueCommandParameter param)
             {
-                param.Collection.Remove(param.Regex);
+                param.List.Remove(param.Value);
             }
         }
     }

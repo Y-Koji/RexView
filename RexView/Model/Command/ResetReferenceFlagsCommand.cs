@@ -1,4 +1,4 @@
-﻿using RexView.Model.DataObject;
+﻿using RexView.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace RexView.Model.Command
 {
-    public class AddRegexCommand : ICommand
+    class ResetReferenceFlagsCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
@@ -17,10 +17,10 @@ namespace RexView.Model.Command
 
         public void Execute(object parameter)
         {
-            if (parameter is AddRegexCommandParameter param)
+            if (parameter is RegexView view)
             {
-                ICloneable cloneable = param.Regex;
-                param.Collection?.Add(cloneable.Clone() as RegexCollectionItem);
+                view.IsRegexReferenceMode = false;
+                view.IsReplaceExpressionReferenceMode = false;
             }
         }
     }

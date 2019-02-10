@@ -11,7 +11,7 @@
              xmlns:local="clr-namespace:RexView.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{x:Type m:RegexModel}">
+             d:DataContext="{x:Type obj:ReferenceItem}">
     
     <Grid Background="White">
         <Grid Background="White">
@@ -20,7 +20,7 @@
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <ListBox ItemsSource="{Binding RegexCollection}">
+                <ListBox ItemsSource="{Binding}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
@@ -53,30 +53,24 @@
                                 <Grid Grid.Column="2">
                                     <Button Content="選択">
                                         <Button.Command>
-                                            <cmd:SelectRegexCommand />
+                                            <cmd:SelectReferenceValueCommand />
                                         </Button.Command>
                                         <Button.CommandParameter>
-                                            <cmd:SelectRegexCommandParameter
-                                                Regex="{Binding}" 
-                                                RegexModel="{Binding DataContext,
-                                                    RelativeSource={
-                                                    RelativeSource FindAncestor, 
-                                                    AncestorType={x:Type local:RegexView}}}" />
+                                            <cmd:SelectRefelenceValueCommandParameter
+                                                NewValue="{Binding Value, Mode=TwoWay}"
+                                                Value="{Binding Text, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReferenceView}}}"/>
                                         </Button.CommandParameter>
                                     </Button>
                                 </Grid>
                                 <Grid Grid.Column="3">
                                     <Button Content="削除">
                                         <Button.Command>
-                                            <cmd:RemoveRegexCommand />
+                                            <cmd:RemoveValueCommand />
                                         </Button.Command>
                                         <Button.CommandParameter>
-                                            <cmd:RemoveRegexCommandParameter 
-                                                Regex="{Binding}"
-                                                Collection="{Binding DataContext.RegexCollection,
-                                                    RelativeSource={
-                                                    RelativeSource FindAncestor,
-                                                    AncestorType={x:Type local:RegexView}}}"/>
+                                            <cmd:RemoveValueCommandParameter 
+                                                Value="{Binding}"
+                                                List="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:ReferenceView}}"/>
                                         </Button.CommandParameter>
                                     </Button>
                                 </Grid>
@@ -93,7 +87,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
                     <control:RegexTextBox 
-                        Text="{Binding RegexText, Mode=TwoWay}" 
+                        Text="{Binding Text, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReferenceView}}}" 
                         VerticalAlignment="Center"
                         FontSize="20" 
                         AcceptsReturn="False" FontFamily="Consolas"/>
@@ -102,22 +96,22 @@
                     <Button>
                         <TextBlock Text="＋" FontSize="20" />
                         <Button.Command>
-                            <cmd:AddRegexCommand />
+                            <cmd:AddValueCommand />
                         </Button.Command>
                         <Button.CommandParameter>
-                            <cmd:AddRegexCommandParameter Collection="{Binding RegexCollection, Mode=OneWay}">
-                                <cmd:AddRegexCommandParameter.Regex>
-                                    <obj:RegexCollectionItem Value="{Binding RegexText}" />
-                                </cmd:AddRegexCommandParameter.Regex>
-                            </cmd:AddRegexCommandParameter>
+                            <cmd:AddValueCommandParameter List="{Binding Mode=OneWay}">
+                                <cmd:AddValueCommandParameter.Value>
+                                    <obj:ReferenceItem Value="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReferenceView}}}" />
+                                </cmd:AddValueCommandParameter.Value>
+                            </cmd:AddValueCommandParameter>
                         </Button.CommandParameter>
                     </Button>
                 </Grid>
                 <Grid Grid.Column="2">
                     <Button Content="完了" 
-                            CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}">
+                            CommandParameter="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReferenceView}}}">
                         <Button.Command>
-                            <cmd:ReferenceModeExitCommand />
+                            <cmd:ReferenceSubmitCommand />
                         </Button.Command>
                     </Button>
                 </Grid>

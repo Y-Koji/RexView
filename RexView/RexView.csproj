@@ -63,13 +63,15 @@
     </Compile>
     <Compile Include="Model\ActionCommand.cs" />
     <Compile Include="Model\Behaviors\FileDragDropBehavior.cs" />
+    <Compile Include="Model\Command\ReferenceSubmitCommand.cs" />
+    <Compile Include="Model\Command\ResetReferenceFlagsCommand.cs" />
     <Compile Include="Model\DataType\CloneableList.cs" />
-    <Compile Include="Model\Command\AddRegexCommand.cs" />
-    <Compile Include="Model\Command\AddRegexCommandParameter.cs" />
-    <Compile Include="Model\Command\RemoveRegexCommand.cs" />
-    <Compile Include="Model\Command\RemoveRegexCommandParameter.cs" />
-    <Compile Include="Model\Command\SelectRegexCommand.cs" />
-    <Compile Include="Model\Command\SelectRegexCommandParameter.cs" />
+    <Compile Include="Model\Command\AddValueCommand.cs" />
+    <Compile Include="Model\Command\AddValueCommandParameter.cs" />
+    <Compile Include="Model\Command\RemoveValueCommand.cs" />
+    <Compile Include="Model\Command\RemoveValueCommandParameter.cs" />
+    <Compile Include="Model\Command\SelectReferenceValueCommand.cs" />
+    <Compile Include="Model\Command\SelectReferenceValueCommandParameter.cs" />
     <Compile Include="Model\Control\RegexTextBox.cs" />
     <Compile Include="Model\Control\TemplateSelector.cs" />
     <Compile Include="Model\DataType\DispatchObservableCollection.cs" />

@@ -83,7 +83,7 @@
                 <Grid Grid.Column="2">
                     <ToggleButton
                         Content="参照" 
-                        IsChecked="{Binding IsReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}"        
+                        IsChecked="{Binding IsRegexReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}"        
                         Height="26"
                         VerticalAlignment="Center"/>
                 </Grid>
@@ -164,9 +164,10 @@
                     Height="26"/>
                 </Grid>
                 <Grid Grid.Column="2">
-                    <Button Content="参照" 
-                        Command="{Binding ReferenceCommand}" 
-                        Height="26"/>
+                    <ToggleButton 
+                        Content="参照" 
+                        Height="26" 
+                        IsChecked="{Binding IsReplaceExpressionReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" />
                 </Grid>
             </Grid>
             <Grid Grid.Row="5">
@@ -189,14 +190,35 @@
                 <Style TargetType="{x:Type Grid}">
                     <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" Value="True">
-                            <Setter Property="Background" Value="Red" />
+                        <DataTrigger Binding="{Binding IsRegexReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsReplaceExpressionReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <local:ReferenceView />
+            <local:ReferenceView 
+                CommandParameter="{Binding Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" >
+                <local:ReferenceView.Command>
+                    <cmd:ResetReferenceFlagsCommand />
+                </local:ReferenceView.Command>
+                <local:ReferenceView.Style>
+                    <Style TargetType="{x:Type local:ReferenceView}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRegexReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" Value="True">
+                                <Setter Property="DataContext" Value="{Binding RegexCollection}" />
+                                <Setter Property="Text" Value="{Binding DataContext.RegexText, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type local:RegexView}}}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsReplaceExpressionReferenceMode, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:RegexView}}}" Value="True">
+                                <Setter Property="DataContext" Value="{Binding RegexCollectionItem.RegexReplaceExpressionCollection}" />
+                                <Setter Property="Text" Value="{Binding DataContext.ReplaceExpression, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type local:RegexView}}}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </local:ReferenceView.Style>
+            </local:ReferenceView>
         </Grid>
     </Grid>
 </UserControl>

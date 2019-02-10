@@ -25,14 +25,24 @@ namespace RexView.View
             InitializeComponent();
         }
 
-        public bool IsReferenceMode
+        public bool IsRegexReferenceMode
         {
-            get { return (bool)GetValue(IsReferenceModeProperty); }
-            set { SetValue(IsReferenceModeProperty, value); }
+            get { return (bool)GetValue(IsRegexReferenceModeProperty); }
+            set { SetValue(IsRegexReferenceModeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsReferenceMode.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsReferenceModeProperty =
-            DependencyProperty.Register("IsReferenceMode", typeof(bool), typeof(RegexView), new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for IsRegexReferenceMode.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsRegexReferenceModeProperty =
+            DependencyProperty.Register("IsRegexReferenceMode", typeof(bool), typeof(RegexView), new PropertyMetadata(false));
+        
+        public bool IsReplaceExpressionReferenceMode
+        {
+            get { return (bool)GetValue(IsReplaceExpressionReferenceModeProperty); }
+            set { SetValue(IsReplaceExpressionReferenceModeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsReplaceExpressionReferenceMode.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsReplaceExpressionReferenceModeProperty =
+            DependencyProperty.Register("IsReplaceExpressionReferenceMode", typeof(bool), typeof(RegexView), new PropertyMetadata(false));
     }
 }

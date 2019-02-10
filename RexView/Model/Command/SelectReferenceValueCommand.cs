@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace RexView.Model.Command
 {
-    public class SelectRegexCommand : ICommand
+    public class SelectReferenceValueCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
@@ -16,9 +16,9 @@ namespace RexView.Model.Command
 
         public void Execute(object parameter)
         {
-            if (parameter is SelectRegexCommandParameter param)
+            if (parameter is SelectRefelenceValueCommandParameter param)
             {
-                param.RegexModel.RegexText = param.Regex.Value;
+                param.Value = param.NewValue;
             }
         }
     }

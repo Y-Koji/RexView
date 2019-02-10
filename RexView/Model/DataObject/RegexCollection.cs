@@ -57,7 +57,7 @@ namespace RexView.Model.DataObject
                 {
                     item.RegexReplaceExpressionCollection.Add(reference);
                 }
-
+                
                 collection.Add(item);
             }
 
@@ -74,7 +74,8 @@ namespace RexView.Model.DataObject
                 Value = x.Value,
                 RegexReplaceExpressionCollection =
                     x.RegexReplaceExpressionCollection
-                     .OfType<ReferenceItemModel>()
+                     .OfType<IReferenceItem>()
+                     .Select(item => new ReferenceItemModel(item))
                      .Aggregate(new CloneableList<ReferenceItemModel>(),
                                 (collection, item) => { collection.Add(item); return collection; }),
             }).ToArray();

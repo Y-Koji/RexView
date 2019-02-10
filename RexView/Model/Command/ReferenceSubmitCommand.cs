@@ -1,11 +1,10 @@
 ﻿using RexView.View;
 using System;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace RexView.Model.Command
 {
-    class ReferenceModeExitCommand : ICommand
+    public class ReferenceSubmitCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
 
@@ -14,9 +13,12 @@ namespace RexView.Model.Command
 
         public void Execute(object parameter)
         {
-            if (parameter is RegexView view)
+            if (parameter is ReferenceView view)
             {
-                view.IsRegexReferenceMode = false;
+                if (view.Command?.CanExecute(new object()) ?? false)
+                {
+                    view.Command.Execute(view.CommandParameter);
+                }
             }
         }
     }
