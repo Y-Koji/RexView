@@ -11,7 +11,6 @@ namespace RexView.ViewModel
     public class MainViewModel : NotifyProperty, INotifyPropertyChanged, IDisposable
     {
         public ICommand InitializeCommand { get => GetValue(new ActionCommand(Initialize)); set => SetValue(value); }
-        public ICommand ReferenceCommand { get => GetValue(new ActionCommand(Reference)); set => SetValue(value); }
         public ICommand AddRegexCommand { get => GetValue(new ActionCommand(AddRegex)); set => SetValue(value); }
         public ICommand RemoveRegexCommand { get => GetValue(new ActionCommand(RemoveRegex)); set => SetValue(value); }
         public ICommand DisposeCommand { get => GetValue(new ActionCommand(Dispose)); set => SetValue(value); }
@@ -20,11 +19,7 @@ namespace RexView.ViewModel
 
         public RegexCollection RegexCollectionModel { get => GetValue<RegexCollection>(null); private set => SetValue(value); }
 
-        public ObservableCollection<RegexModel> Regexes
-        {
-            get => GetValue(new ObservableCollection<RegexModel>());
-            set => SetValue(value);
-        }
+        public ObservableCollection<RegexModel> Regexes { get => GetValue(new ObservableCollection<RegexModel>()); set => SetValue(value); }
         
         private async void Initialize()
         {
@@ -39,11 +34,6 @@ namespace RexView.ViewModel
 
             IEditableCollectionView regexesView = CollectionViewSource.GetDefaultView(Regexes) as IEditableCollectionView;
             regexesView.NewItemPlaceholderPosition = NewItemPlaceholderPosition.AtEnd;
-        }
-
-        public void Reference()
-        {
-
         }
 
         private void AddRegex()

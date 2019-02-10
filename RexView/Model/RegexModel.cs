@@ -32,7 +32,13 @@ namespace RexView.Model
         public string ReplaceExpression { get => GetValue(string.Empty); set => SetValue(value, OnTextChanged); }
         [DataMember]
         public string ReplacedText { get => GetValue(string.Empty); set => SetValue(value); }
-
+        [DataMember]
+        public DispatchObservableCollection<RegexOption> MatchOptions
+        {
+            get => GetValue(new DispatchObservableCollection<RegexOption>());
+            set => SetValue(value);
+        }
+       
         private bool IsDeleted { get; set; } = false;
         
         public RegexModel(string name)
@@ -43,13 +49,6 @@ namespace RexView.Model
         public DispatchObservableCollection<DispatchObservableCollection<Group>> MatchGroups
         {
             get => GetValue(new DispatchObservableCollection<DispatchObservableCollection<Group>>());
-        }
-       
-        [DataMember]
-        public DispatchObservableCollection<RegexOption> MatchOptions
-        {
-            get => GetValue(new DispatchObservableCollection<RegexOption>());
-            set => SetValue(value);
         }
 
         public RegexCollection RegexCollection { get => GetValue<RegexCollection>(null); set => SetValue(value); }
